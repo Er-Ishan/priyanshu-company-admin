@@ -60,13 +60,7 @@ type NavSection = {
 /* ---------------- NAV DATA ---------------- */
 export const NAV_SECTIONS: NavSection[] = [
   { id: "dashboard", title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, permission: "access_dashboard" },
-  {
-    id: "addnew",
-    title: "Add New Bookings",
-    url: "/AddBookings",
-    icon: CirclePlus,
-    permission: "access_add_bookings",
-  },
+
   {
     id: "bookings",
     title: "Bookings",
@@ -79,7 +73,7 @@ export const NAV_SECTIONS: NavSection[] = [
       { title: "Admin", url: "/mobile-bookings", icon: FileText, permission: "access_admin_bookings" },
       { title: "Cancelled", url: "/refund-bookings", icon: FileText, permission: "access_cancelled_bookings" },
       { title: "Incomplete", url: "/incomplete-bookings", icon: FileText, permission: "access_incomplete_bookings" },
-      { title: "refunded", url: "/refund-bookings", icon: FileText, permission: "access_refunded_bookings" },
+      { title: "Refunded", url: "/refund-bookings", icon: FileText, permission: "access_refunded_bookings" },
     ],
   },
   {
@@ -369,15 +363,12 @@ export default function TopNavbar() {
 
 
           {/* MAIN NAVBAR */}
-          <div className="h-16 px-8 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-950">
-            <div className="flex items-center h-full flex-1 px-6">
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-3 h-full transition-transform hover:scale-105 active:scale-95"
-              >
-                <div className="flex items-center gap-2">
-                  {(currentUser?.user as any)?.company_logo ? (
-                    <div className="relative h-[52px] w-[220px] flex items-center">
+          <div className="h-16 px-4 md:px-8 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-950">
+            <div className="flex items-center gap-2 sm:gap-4 md:gap-8 flex-1">
+              <Link href="/dashboard" className="shrink-0 flex items-center justify-center h-full">
+                <div className="flex items-center justify-center min-w-0">
+                  {currentUser?.user && (currentUser.user as any).company_logo ? (
+                    <div className="relative h-8 w-[110px] sm:h-10 sm:w-[140px] md:h-[52px] md:w-[220px] flex items-center">
                       <Image
                         src={(currentUser?.user as any).company_logo}
                         alt={currentUser?.user?.company_name || "Admin"}
@@ -403,9 +394,20 @@ export default function TopNavbar() {
                 ))} */}
               </nav>
             </div>
-            <div className="flex items-center gap-5">
-              <div className="hidden md:flex items-center gap-3 border-r border-slate-200 dark:border-slate-800 pr-5">
-                <ThemeToggle />
+            <div className="flex items-center gap-1 sm:gap-3 md:gap-5 shrink-0">
+              <div className="flex items-center gap-1 sm:gap-2 md:gap-3 md:border-r md:border-slate-200 md:dark:border-slate-800 md:pr-5">
+                <Link href="/AddBookings">
+                  <Button size="sm" className="hidden sm:flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-all active:scale-95">
+                    <CirclePlus size={16} />
+                    <span className="font-semibold">Add New Booking</span>
+                  </Button>
+                  <Button size="icon" variant="ghost" className="sm:hidden flex items-center justify-center bg-primary/10 text-primary hover:bg-primary/20">
+                    <CirclePlus size={18} />
+                  </Button>
+                </Link>
+                <div className="flex items-center">
+                  <ThemeToggle />
+                </div>
               </div>
               <button
                 className="relative h-10 w-10 rounded-xl transition"
@@ -424,9 +426,9 @@ export default function TopNavbar() {
             </div>
           </div>
           {/* MAIN NAVBAR */}
-          <div className="h-14 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
-            <div className="flex items-center h-full">
-              <nav className="hidden lg:flex items-center justify-start gap-2 h-full flex-1 pl-6">
+          <div className="h-14 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hidden lg:block">
+            <div className="flex items-center justify-center h-full max-w-screen-2xl mx-auto px-6">
+              <nav className="flex items-center justify-center gap-4 h-full">
                 {filteredSections.map((s) => (
                   <NavButton key={s.id} section={s} />
                 ))}
@@ -435,7 +437,7 @@ export default function TopNavbar() {
           </div>
           {/* MOBILE NAV PANEL */}
           {mobileOpen && (
-            <div className="lg:hidden border-t bg-background/95 backdrop-blur-xl p-4 space-y-2 animate-in slide-in-from-top-4 duration-300">
+            <div className="lg:hidden border-t bg-background/95 backdrop-blur-xl p-4 space-y-2 animate-in slide-in-from-top-4 duration-300 max-h-[calc(100vh-4rem)] overflow-y-auto">
               {filteredSections.map((s) => (
                 <div key={s.id} className="flex flex-col">
                   <button
@@ -501,8 +503,8 @@ export default function TopNavbar() {
 
           {/* SUB NAVBAR */}
           {hasSubNav && activeSection && (
-            <div className="border-t bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-xl transition-all duration-500 animate-in fade-in slide-in-from-top-2">
-              <div className="min-h-14 flex items-center justify-center gap-1 max-w-screen-2xl mx-auto overflow-x-auto whitespace-nowrap scrollbar-hide px-4 py-2">
+            <div className="hidden lg:block border-t bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-xl transition-all duration-500 animate-in fade-in slide-in-from-top-2">
+              <div className="min-h-14 flex flex-wrap md:flex-nowrap items-center justify-center gap-2 max-w-screen-2xl mx-auto md:overflow-x-auto md:whitespace-nowrap md:scrollbar-hide px-2 md:px-4 py-3 md:py-2">
                 {(() => {
                   let lastGroup: string | undefined;
                   return activeSection.items!.filter(item => hasPerm(item.permission)).map((item) => {
@@ -521,7 +523,7 @@ export default function TopNavbar() {
                         <Link
                           href={item.url}
                           className={cn(
-                            "flex items-center gap-2 px-3 py-1.5 text-sm font-medium whitespace-nowrap rounded-lg transition-all duration-200",
+                            "flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 w-[48%] sm:w-[31%] md:w-auto",
                             "border border-transparent",
                             isItemActive
                               ? "bg-green-500 hover:bg-green-600 text-white shadow-sm border-green-500 dark:bg-green-600 dark:hover:bg-green-700 dark:border-green-600"
@@ -550,7 +552,7 @@ export default function TopNavbar() {
             </div>
           )}
           {/* MOBILE SEARCH */}
-          <div className="px-4 pb-3 lg:hidden">
+          <div className="px-4 pb-3 mt-2 lg:hidden">
             <Input placeholder="Search…" className="h-9" />
           </div>
         </header>

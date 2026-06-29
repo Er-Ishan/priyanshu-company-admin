@@ -1,0 +1,22 @@
+{
+  "/(dashboard)/(homes)/dashboard/page": "app/(dashboard)/(homes)/dashboard/page.js",
+  "/(dashboard)/AddBookings/page": "app/(dashboard)/AddBookings/page.js",
+  "/(dashboard)/ChargesTable/page": "app/(dashboard)/ChargesTable/page.js",
+  "/(dashboard)/Suppliers-Info/page": "app/(dashboard)/Suppliers-Info/page.js",
+  "/(dashboard)/active-bookings/page": "app/(dashboard)/active-bookings/page.js",
+  "/(dashboard)/depart-report/page": "app/(dashboard)/depart-report/page.js",
+  "/(dashboard)/incomplete-bookings/page": "app/(dashboard)/incomplete-bookings/page.js",
+  "/(dashboard)/promo-codes/page": "app/(dashboard)/promo-codes/page.js",
+  "/(dashboard)/refund-bookings/page": "app/(dashboard)/refund-bookings/page.js",
+  "/(dashboard)/return-report/page": "app/(dashboard)/return-report/page.js",
+  "/(dashboard)/tracking/job-operations/page": "app/(dashboard)/tracking/job-operations/page.js",
+  "/(dashboard)/tracking/jobs/page": "app/(dashboard)/tracking/jobs/page.js",
+  "/(dashboard)/websiteData/page": "app/(dashboard)/websiteData/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/api/backend/[[...path]]/route": "app/api/backend/[[...path]]/route.js",
+  "/api/session/check/route": "app/api/session/check/route.js",
+  "/api/session/me/route": "app/api/session/me/route.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js"
+}

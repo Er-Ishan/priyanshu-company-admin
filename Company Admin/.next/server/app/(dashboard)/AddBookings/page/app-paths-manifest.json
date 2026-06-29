@@ -1,0 +1,3 @@
+{
+  "/(dashboard)/AddBookings/page": "app/(dashboard)/AddBookings/page.js"
+}

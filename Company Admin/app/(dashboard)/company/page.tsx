@@ -23,7 +23,7 @@ const ViewProfile = () => {
         <>
             <DashboardBreadcrumb title="Company" text="Company" />
 
-            <div>
+            <div className="w-full min-h-screen px-2 sm:px-4 pt-6 mt-4 pb-8 sm:py-8 space-y-6">
                 <div className="card h-full rounded-lg border-0 p-6">
                     <div className="card-body p-0">
                         <form action={saveProfileAction}>

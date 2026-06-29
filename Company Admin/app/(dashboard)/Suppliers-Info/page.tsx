@@ -1353,7 +1353,7 @@ export default function BookingsPage() {
     =========================================================== */
     return (
         <ProtectedRoute>
-            <div className="w-full min-h-screen px-4 py-8 space-y-6">
+            <div className="w-full min-h-screen px-2 sm:px-4 pt-2 mt-2 pb-8 sm:py-8 space-y-6">
                 {/* POPUPS */}
                 <CancelPopup
                     open={cancelPopupOpen}
@@ -1629,7 +1629,7 @@ export default function BookingsPage() {
                                                 </TableCell>
 												
 												<TableCell className="text-center py-4">
-                                                    <span className="font-black text-black tracking-tight">{b.total_payable}</span>
+                                                    <span className="font-black text-foreground tracking-tight">{b.total_payable}</span>
                                                 </TableCell>
 												
                                                 <TableCell className="text-center py-4">

@@ -1367,7 +1367,7 @@ export default function BookingsPage() {
     =========================================================== */
     return (
         <ProtectedRoute>
-            <div className="w-full min-h-screen px-4 py-8 space-y-6">
+            <div className="w-full min-h-screen px-2 sm:px-4 pt-2 mt-2 pb-8 sm:py-8 space-y-6">
                 <CancelPopup
                     open={cancelPopupOpen}
                     booking={selectedBooking}
@@ -1613,24 +1613,6 @@ export default function BookingsPage() {
                                             <TableCell className="text-center py-4 font-bold text-muted-foreground/50">{(page - 1) * limit + (i + 1)}</TableCell>
                                             <TableCell className="text-center py-4">
                                                 <div className="flex items-center justify-center gap-2">
-                                                    {/* NOTES */}
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <button 
-                                                                onClick={() => openNotesPopup(b)}
-                                                                className={cn(
-                                                                    "p-2 rounded-lg transition-all active:scale-95",
-                                                                    b.notes?.trim() ? "bg-red-500/10 text-red-600 hover:bg-red-500/20" : "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20"
-                                                                )}
-                                                            >
-                                                                <NotebookPen size={14} strokeWidth={2.5} />
-                                                            </button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent className="bg-card border-border shadow-xl">
-                                                            <p className="text-xs font-bold">{b.notes?.trim() || "No notes available"}</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-
                                                     {/* ACTIONS DROPDOWN */}
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
@@ -1639,6 +1621,12 @@ export default function BookingsPage() {
                                                             </button>
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent align="end" className="w-[200px] p-2 bg-card border-border shadow-2xl rounded-xl">
+                                                            <DropdownMenuItem 
+                                                                onSelect={() => openNotesPopup(b)}
+                                                                className="rounded-lg gap-3 py-2.5 font-bold text-xs focus:bg-primary/10 focus:text-primary transition-colors cursor-pointer"
+                                                            >
+                                                                <NotebookPen size={16} /> Notes
+                                                            </DropdownMenuItem>
                                                             <DropdownMenuItem 
                                                                 onSelect={() => openEdit(b, "amend")}
                                                                 className="rounded-lg gap-3 py-2.5 font-bold text-xs focus:bg-primary/10 focus:text-primary transition-colors cursor-pointer"
@@ -1651,16 +1639,14 @@ export default function BookingsPage() {
                                                             >
                                                                 <Clock size={16} /> Extend Booking
                                                             </DropdownMenuItem>
+                                                            <DropdownMenuItem 
+                                                                onSelect={() => openCancelPopup(b)}
+                                                                className="rounded-lg gap-3 py-2.5 font-bold text-xs focus:bg-red-500/10 focus:text-red-600 transition-colors cursor-pointer"
+                                                            >
+                                                                <Trash2 size={16} /> Cancel Booking
+                                                            </DropdownMenuItem>
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
-
-                                                    {/* DELETE */}
-                                                    <button 
-                                                        onClick={() => openCancelPopup(b)}
-                                                        className="p-2 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-all active:scale-95"
-                                                    >
-                                                        <Trash2 size={14} strokeWidth={2.5} />
-                                                    </button>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-center py-4 font-bold text-xs text-muted-foreground uppercase">{b.travelling_from}</TableCell>

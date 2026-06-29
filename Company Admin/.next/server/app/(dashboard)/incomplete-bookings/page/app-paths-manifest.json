@@ -1,0 +1,3 @@
+{
+  "/(dashboard)/incomplete-bookings/page": "app/(dashboard)/incomplete-bookings/page.js"
+}

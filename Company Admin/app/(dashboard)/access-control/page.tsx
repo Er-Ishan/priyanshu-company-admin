@@ -186,7 +186,7 @@ export default function AccessControlPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="w-full min-h-screen px-2 sm:px-4 pt-6 mt-4 pb-8 sm:py-8 space-y-6 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">

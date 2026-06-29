@@ -1090,7 +1090,7 @@ export default function BookingsPage() {
     return (
 
         <ProtectedRoute>
-            <div className="w-full min-h-screen px-4 py-8 space-y-6">
+            <div className="w-full min-h-screen px-2 sm:px-4 pt-2 mt-2 pb-8 sm:py-8 space-y-6">
                 <CancelPopup
                     open={cancelPopupOpen}
                     booking={selectedBooking}
