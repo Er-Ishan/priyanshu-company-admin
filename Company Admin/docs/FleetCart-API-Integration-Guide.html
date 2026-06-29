@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FleetCart API Integration Guide</title>
+  <style>
+    :root {
+      --fc-primary: #0f4c81;
+      --fc-primary-dark: #0a3559;
+      --fc-accent: #00a896;
+      --fc-accent-light: #e6f7f5;
+      --fc-bg: #f4f7fb;
+      --fc-card: #ffffff;
+      --fc-text: #1a2332;
+      --fc-muted: #5a6578;
+      --fc-border: #dde4ee;
+      --fc-code-bg: #0d1117;
+      --fc-success: #059669;
+      --fc-warning: #d97706;
+      --fc-error: #dc2626;
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(15, 76, 129, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--fc-bg);
+      color: var(--fc-text);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--fc-primary) 0%, var(--fc-primary-dark) 60%, #062a47 100%);
+      color: #fff;
+      padding: 3rem 1.5rem 4rem;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 0.35rem 1rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero p {
+      max-width: 640px;
+      margin: 0 auto;
+      opacity: 0.9;
+      font-size: 1.05rem;
+    }
+
+    .hero-meta {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .hero-meta span {
+      background: rgba(0,168,150,0.25);
+      border: 1px solid rgba(0,168,150,0.4);
+      padding: 0.4rem 1rem;
+      border-radius: 8px;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: -2rem auto 3rem;
+      padding: 0 1.25rem;
+    }
+
+    nav.toc {
+      background: var(--fc-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+    }
+
+    nav.toc h2 {
+      font-size: 1rem;
+      color: var(--fc-primary);
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    nav.toc ol {
+      columns: 2;
+      column-gap: 2rem;
+      padding-left: 1.25rem;
+    }
+
+    nav.toc a {
+      color: var(--fc-text);
+      text-decoration: none;
+      font-size: 0.92rem;
+    }
+
+    nav.toc a:hover { color: var(--fc-accent); }
+
+    section {
+      background: var(--fc-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    section h2 {
+      font-size: 1.45rem;
+      color: var(--fc-primary);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--fc-accent-light);
+    }
+
+    section h3 {
+      font-size: 1.1rem;
+      color: var(--fc-primary-dark);
+      margin: 1.5rem 0 0.75rem;
+    }
+
+    section h4 {
+      font-size: 0.95rem;
+      color: var(--fc-muted);
+      margin: 1rem 0 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    p { margin-bottom: 0.85rem; color: var(--fc-text); }
+
+    .lead { font-size: 1.05rem; color: var(--fc-muted); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.92rem;
+    }
+
+    th, td {
+      border: 1px solid var(--fc-border);
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+    }
+
+    th {
+      background: var(--fc-accent-light);
+      color: var(--fc-primary-dark);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) td { background: #fafbfd; }
+
+    code {
+      font-family: "Cascadia Code", "Consolas", monospace;
+      background: #eef2f7;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: var(--fc-primary-dark);
+    }
+
+    pre {
+      background: var(--fc-code-bg);
+      color: #e6edf3;
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    .endpoint-box {
+      background: linear-gradient(90deg, var(--fc-accent-light), #fff);
+      border: 1px solid var(--fc-border);
+      border-left: 4px solid var(--fc-accent);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-family: monospace;
+      font-size: 0.95rem;
+      word-break: break-all;
+    }
+
+    .method {
+      display: inline-block;
+      background: var(--fc-primary);
+      color: #fff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      margin-right: 0.5rem;
+    }
+
+    .alert {
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+
+    .alert-info {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+    }
+
+    .alert-warning {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      color: #92400e;
+    }
+
+    .alert-success {
+      background: #ecfdf5;
+      border: 1px solid #6ee7b7;
+      color: #065f46;
+    }
+
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+    }
+
+    .steps li {
+      counter-increment: step;
+      position: relative;
+      padding: 1rem 1rem 1rem 3.5rem;
+      margin-bottom: 0.75rem;
+      background: var(--fc-bg);
+      border-radius: 8px;
+      border: 1px solid var(--fc-border);
+    }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2rem;
+      height: 2rem;
+      background: var(--fc-accent);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .credential-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    @media (max-width: 700px) {
+      .credential-grid { grid-template-columns: 1fr; }
+      nav.toc ol { columns: 1; }
+    }
+
+    .credential-card {
+      border: 1px solid var(--fc-border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      background: var(--fc-bg);
+    }
+
+    .credential-card h3 {
+      margin-top: 0;
+      font-size: 1rem;
+    }
+
+    .credential-card .tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+
+    .tag-provider { background: #dbeafe; color: #1d4ed8; }
+    .tag-admin { background: #d1fae5; color: #047857; }
+
+    .flow-diagram {
+      background: #fafbfd;
+      border: 1px dashed var(--fc-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      font-family: monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .s200 { background: #d1fae5; color: #065f46; }
+    .s400 { background: #fef3c7; color: #92400e; }
+    .s401 { background: #fee2e2; color: #991b1b; }
+    .s500 { background: #fecaca; color: #7f1d1d; }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--fc-muted);
+      font-size: 0.85rem;
+    }
+
+    footer strong { color: var(--fc-primary); }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="hero-badge">Official Integration Documentation</div>
+    <h1>FleetCart API Integration Guide</h1>
+    <p style="color: white;">Complete step-by-step documentation for integrating airport parking search and live pricing, available space (parking slotes) into your website or booking platform.</p>
+    <div class="hero-meta">
+      <span>Base URL: apis.fleetcart.co.uk/api</span>
+      <span>Version 1.0</span>
+      <span>JSON · HTTPS · POST</span>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <nav class="toc">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#intro">Introduction</a></li>
+        <li><a href="#credentials">Credentials Setup</a></li>
+        <li><a href="#overview">Integration Overview</a></li>
+        <li><a href="#quickstart">Quick Start</a></li>
+        <li><a href="#getairports">Get Airports API</a></li>
+        <li><a href="#products">Products API</a></li>
+        <li><a href="#implementation">Step-by-Step Implementation</a></li>
+        <li><a href="#examples">Code Examples</a></li>
+        <li><a href="#errors">Error Handling</a></li>
+        <li><a href="#faq">FAQ &amp; Support</a></li>
+      </ol>
+    </nav>
+
+    <!-- INTRO -->
+    <section id="intro">
+      <h2>1. Introduction</h2>
+      <p class="lead">The FleetCart API enables partners to retrieve available airports and parking products with calculated prices in real time.</p>
+      <table>
+        <thead>
+          <tr><th>Endpoint</th><th>URL</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Get Airports</td>
+            <td><code>/api/getAirports</code></td>
+            <td>List airports for your company</td>
+          </tr>
+          <tr>
+            <td>Get Products</td>
+            <td><code>/api/products</code></td>
+            <td>Fetch products and live pricing</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="alert alert-info">
+        <strong>Security note:</strong> Always call the FleetCart API from your <strong>server</strong>, never from browser JavaScript. Tokens must remain private.
+      </div>
+    </section>
+
+    <!-- CREDENTIALS -->
+    <section id="credentials">
+      <h2>2. Credentials Setup</h2>
+      <p>Before making any API call, obtain both tokens below.</p>
+
+      <div class="credential-grid">
+        <div class="credential-card">
+          <span class="tag tag-provider">From FleetCart — Service Provider</span>
+          <h3><code>app_token</code></h3>
+          <p>Identifies your parking company. Required for <strong>every</strong> API request.</p>
+          <h4>How to obtain</h4>
+          <ol style="padding-left:1.25rem; font-size:0.92rem;">
+            <li>Contact FleetCart support or your account manager</li>
+            <li>Request API access for your company</li>
+            <li>FleetCart activates your account and shares your unique token</li>
+            <li>Store it securely in environment variables — never in frontend code</li>
+          </ol>
+        </div>
+
+        <div class="credential-card">
+          <span class="tag tag-admin">From Company Admin Panel</span>
+          <h3><code>supplier_token</code></h3>
+          <p>Identifies the supplier/partner. Required for the <strong>Products</strong> endpoint only.</p>
+          <h4>How to generate</h4>
+          <ol style="padding-left:1.25rem; font-size:0.92rem;">
+            <li>Log in to the FleetCart Company Admin Panel</li>
+            <li>Go to <strong>Suppliers</strong> → create or edit a supplier</li>
+            <li>Ensure the supplier is <strong>Active</strong></li>
+            <li>Copy the generated <code>supplier_token</code></li>
+            <li>Configure commission and allowed products as needed</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- OVERVIEW -->
+    <section id="overview">
+      <h2>3. Integration Overview</h2>
+      <div class="flow-diagram">YOUR WEBSITE / APP
+        │
+        ├─── (1) POST /api/getAirports  { app_token }
+        │         └── Returns: airport list (name, IATA, id)
+        │
+        └─── (2) POST /api/products     { app_token, supplier_token, dates, airport }
+                  └── Returns: products with prices &amp; commission</div>
+    </section>
+
+    <!-- QUICK START -->
+    <section id="quickstart">
+      <h2>4. Quick Start — 5 Steps</h2>
+      <ol class="steps">
+        <li>Obtain your <code>app_token</code> from FleetCart</li>
+        <li>Generate a <code>supplier_token</code> in the Company Admin Panel</li>
+        <li>Call <strong>Get Airports</strong> to populate your airport dropdown</li>
+        <li>Collect drop-off/return date &amp; time from the user</li>
+        <li>Call <strong>Get Products</strong> and display names and prices</li>
+      </ol>
+    </section>
+
+    <!-- GET AIRPORTS -->
+    <section id="getairports">
+      <h2>5. Get Airports API</h2>
+      <div class="endpoint-box">
+        <span class="method">POST</span>
+        https://apis.fleetcart.co.uk/api/getAirports
+      </div>
+
+      <h3>Request Body</h3>
+      <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>app_token</code></td><td>string</td><td>Yes</td><td>Company token from FleetCart</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Example Request</h3>
+      <pre><code>{
+  "app_token": "your_app_token_here"
+}</code></pre>
+
+      <h3>Success Response <span class="status-badge s200">200 OK</span></h3>
+      <pre><code>{
+  "success": true,
+  "data": [
+    {
+      "airport_id": 1,
+      "airport_name": "London Heathrow",
+      "iata_code": "LHR"
+    },
+    {
+      "airport_id": 2,
+      "airport_name": "London Gatwick",
+      "iata_code": "LGW"
+    }
+  ]
+}</code></pre>
+
+      <div class="alert alert-warning">
+        When calling <strong>/api/products</strong>, use the exact <code>airport_name</code> value — not the IATA code alone.
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="products">
+      <h2>6. Get Products &amp; Pricing API</h2>
+      <div class="endpoint-box">
+        <span class="method">POST</span>
+        https://apis.fleetcart.co.uk/api/products
+      </div>
+
+      <h3>Request Body</h3>
+      <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>app_token</code></td><td>string</td><td>Yes</td><td>Company token from FleetCart</td></tr>
+          <tr><td><code>supplier_token</code></td><td>string</td><td>Yes</td><td>Supplier token from Admin Panel</td></tr>
+          <tr><td><code>depart_date</code></td><td>string</td><td>Yes</td><td>Drop-off date — <code>YYYY-MM-DD</code></td></tr>
+          <tr><td><code>depart_time</code></td><td>string</td><td>Yes</td><td>Drop-off time — <code>HH:mm</code> or <code>HH:mm:ss</code></td></tr>
+          <tr><td><code>return_date</code></td><td>string</td><td>Yes</td><td>Return date — <code>YYYY-MM-DD</code></td></tr>
+          <tr><td><code>return_time</code></td><td>string</td><td>Yes</td><td>Return time — <code>HH:mm</code> or <code>HH:mm:ss</code></td></tr>
+          <tr><td><code>airport</code></td><td>string</td><td>Yes</td><td>Airport name from Get Airports response</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Example Request</h3>
+      <pre><code>{
+  "app_token": "your_app_token_here",
+  "supplier_token": "your_supplier_token_here",
+  "depart_date": "2026-06-22",
+  "depart_time": "10:00",
+  "return_date": "2026-06-29",
+  "return_time": "18:00",
+  "airport": "London Heathrow"
+}</code></pre>
+
+      <h3>Success Response <span class="status-badge s200">200 OK</span></h3>
+      <pre><code>{
+  "success": true,
+  "data": [
+    {
+      "CompanyName": "Example Parking Ltd",
+      "ProductName": "Meet & Greet Terminal 5",
+      "ProductPrice": "89.50",
+      "AvailableSlots": "",
+      "SupplierCommission": 12.5
+    }
+  ]
+}</code></pre>
+
+      <h3>Response Fields</h3>
+      <table>
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>CompanyName</code></td><td>Your company name</td></tr>
+          <tr><td><code>ProductName</code></td><td>Parking product display name</td></tr>
+          <tr><td><code>ProductPrice</code></td><td>Calculated price (2 decimal places, string)</td></tr>
+          <tr><td><code>AvailableSlots</code></td><td>Reserved — currently empty</td></tr>
+          <tr><td><code>SupplierCommission</code></td><td>Commission % configured for the supplier</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- IMPLEMENTATION -->
+    <section id="implementation">
+      <h2>7. Step-by-Step Implementation</h2>
+
+      <h3>Step 1 — Store credentials securely</h3>
+      <pre><code># .env (server-side only — never commit to Git)
+FLEETCART_APP_TOKEN=your_app_token_here
+FLEETCART_SUPPLIER_TOKEN=your_supplier_token_here
+FLEETCART_API_BASE=https://apis.fleetcart.co.uk/api</code></pre>
+
+      <h3>Step 2 — Load airports on page init</h3>
+      <p>Call Get Airports from your backend and populate a dropdown using <code>airport_name</code> as the value.</p>
+
+      <h3>Step 3 — Build the search form</h3>
+      <table>
+        <thead><tr><th>UI Field</th><th>API Parameter</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Drop-off date</td><td><code>depart_date</code></td><td><code>2026-06-22</code></td></tr>
+          <tr><td>Drop-off time</td><td><code>depart_time</code></td><td><code>10:00</code></td></tr>
+          <tr><td>Return date</td><td><code>return_date</code></td><td><code>2026-06-29</code></td></tr>
+          <tr><td>Return time</td><td><code>return_time</code></td><td><code>18:00</code></td></tr>
+          <tr><td>Airport</td><td><code>airport</code></td><td><code>London Heathrow</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Step 4 — Fetch products on search</h3>
+      <p>When the user submits the form, your backend calls <code>/api/products</code> and returns results to the frontend.</p>
+
+      <h3>Step 5 — Display results</h3>
+      <p>Show <code>ProductName</code> and <code>ProductPrice</code> to users. Use <code>SupplierCommission</code> internally for reporting.</p>
+
+      <div class="alert alert-success">
+        An empty <code>data: []</code> array is a valid response — show a friendly "no availability" message rather than an error.
+      </div>
+    </section>
+
+    <!-- EXAMPLES -->
+    <section id="examples">
+      <h2>8. Code Examples</h2>
+
+      <h3>cURL — Get Airports</h3>
+      <pre><code>curl -X POST "https://apis.fleetcart.co.uk/api/getAirports" \
+  -H "Content-Type: application/json" \
+  -d '{"app_token": "YOUR_APP_TOKEN"}'</code></pre>
+
+      <h3>cURL — Get Products</h3>
+      <pre><code>curl -X POST "https://apis.fleetcart.co.uk/api/products" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "app_token": "YOUR_APP_TOKEN",
+    "supplier_token": "YOUR_SUPPLIER_TOKEN",
+    "depart_date": "2026-06-22",
+    "depart_time": "10:00",
+    "return_date": "2026-06-29",
+    "return_time": "18:00",
+    "airport": "London Heathrow"
+  }'</code></pre>
+
+      <h3>Node.js — Server-side proxy</h3>
+      <pre><code>app.post("/api/parking-quotes", async (req, res) => {
+  const { depart_date, depart_time, return_date, return_time, airport } = req.body;
+
+  const response = await fetch("https://apis.fleetcart.co.uk/api/products", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      app_token: process.env.FLEETCART_APP_TOKEN,
+      supplier_token: process.env.FLEETCART_SUPPLIER_TOKEN,
+      depart_date, depart_time, return_date, return_time, airport,
+    }),
+  });
+
+  const result = await response.json();
+  res.status(response.status).json(result);
+});</code></pre>
+
+      <h3>PHP — Get Airports</h3>
+      <pre><code>$ch = curl_init('https://apis.fleetcart.co.uk/api/getAirports');
+curl_setopt_array($ch, [
+    CURLOPT_POST => true,
+    CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+    CURLOPT_POSTFIELDS => json_encode(['app_token' => getenv('FLEETCART_APP_TOKEN')]),
+    CURLOPT_RETURNTRANSFER => true,
+]);
+$result = json_decode(curl_exec($ch), true);
+curl_close($ch);</code></pre>
+    </section>
+
+    <!-- ERRORS -->
+    <section id="errors">
+      <h2>9. Error Handling</h2>
+      <p>All errors return JSON: <code>{ "success": false, "message": "..." }</code></p>
+
+      <table>
+        <thead><tr><th>Status</th><th>Meaning</th><th>Common Cause</th></tr></thead>
+        <tbody>
+          <tr><td><span class="status-badge s200">200</span></td><td>Success</td><td>Includes empty product lists</td></tr>
+          <tr><td><span class="status-badge s400">400</span></td><td>Bad Request</td><td>Missing fields or invalid date/time</td></tr>
+          <tr><td><span class="status-badge s401">401</span></td><td>Unauthorized</td><td>Invalid or missing tokens</td></tr>
+          <tr><td><span class="status-badge s500">500</span></td><td>Server Error</td><td>Retry or contact FleetCart support</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Common Error Messages</h3>
+      <table>
+        <thead><tr><th>Message</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><code>app_token is required</code></td><td>Include app_token in request body</td></tr>
+          <tr><td><code>Invalid app_token</code></td><td>Verify token with FleetCart; check company is active</td></tr>
+          <tr><td><code>supplier_token is required</code></td><td>Include supplier_token for /api/products</td></tr>
+          <tr><td><code>Invalid supplier_token</code></td><td>Check Admin Panel — supplier must be active</td></tr>
+          <tr><td><code>Invalid depart or return date/time</code></td><td>Use YYYY-MM-DD and HH:mm formats</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <h2>10. FAQ &amp; Support</h2>
+
+      <h3>Can I use GET instead of POST?</h3>
+      <p>No. Both endpoints require POST with a JSON body.</p>
+
+      <h3>Should I send IATA code or airport name?</h3>
+      <p>Send the full <code>airport_name</code> exactly as returned by Get Airports.</p>
+
+      <h3>Why are some products missing?</h3>
+      <p>Products are filtered by operational hours, airport, supplier settings, and price band availability.</p>
+
+      <h3>Health check</h3>
+      <div class="endpoint-box">
+        <span class="method" style="background:#059669">GET</span>
+        https://apis.fleetcart.co.uk/health
+      </div>
+
+      <h3>Contact</h3>
+      <p>For API access, token issues, or integration support, contact your <strong>FleetCart account manager</strong> or support team. When reporting issues, include the endpoint, HTTP status, error message, and timestamp — but never share your tokens.</p>
+    </section>
+
+  </div>
+
+  <footer>
+    <strong>FleetCart</strong> — API Integration Guide v1.0 · © FleetCart
+  </footer>
+
+</body>
+</html>
